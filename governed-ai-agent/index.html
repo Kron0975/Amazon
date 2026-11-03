@@ -86,24 +86,8 @@
                     <span>☷</span> Tasks
                 </a>
 
-                <a href="#" class="nav-link" data-view="approvals">
-                    <span>✓</span> Approvals
-                </a>
-
-                <a href="#" class="nav-link" data-view="policies">
-                    <span>◇</span> Policies
-                </a>
-
-                <a href="#" class="nav-link" data-view="evaluations">
-                    <span>▥</span> Evaluations
-                </a>
-
                 <a href="#" class="nav-link" data-view="repair">
                     <span>✎</span> Repair Studio
-                </a>
-
-                <a href="#" class="nav-link" data-view="playground">
-                    <span>⚡</span> Evaluation Playground
                 </a>
             </nav>
 
@@ -248,213 +232,191 @@
             </section>
 
             <!-- Task Center -->
-            <section id="tasksView" class="page-view" hidden>
-                <div class="page-header">
-                    <h1>Task Center</h1>
-                    <p>Track submitted tasks, completed work, and scanned documents.</p>
-                </div>
+             <section id="tasksView" class="page-view" hidden>
+    <div class="page-header tasks-header">
+        <div>
+            <h1>Task Center</h1>
+            <p>Track submitted tasks, completed work, and scanned documents.</p>
+        </div>
+        <button type="button" id="createTaskFromTasks" class="primary-button">
+            + New task
+        </button>
+    </div>
 
-                <div class="panel">
+    <!-- Summary -->
+    <div class="task-summary-grid">
+        <article class="task-summary-card">
+            <span>Total</span>
+            <strong id="taskCountTotal">0</strong>
+        </article>
+        <article class="task-summary-card">
+            <span>In progress</span>
+            <strong id="taskCountRunning">0</strong>
+        </article>
+        <article class="task-summary-card">
+            <span>Needs attention</span>
+            <strong id="taskCountAttention">0</strong>
+        </article>
+        <article class="task-summary-card">
+            <span>Completed</span>
+            <strong id="taskCountCompleted">0</strong>
+        </article>
+    </div>
+
+    <!-- History + details -->
+    <div class="task-center-layout">
+        <div class="panel">
+            <div class="section-heading">
+                <div>
                     <h2>Task History</h2>
-                    <div id="taskHistoryList">
-                        <p>No tasks submitted yet.</p>
-                    </div>
+                    <p>Select a task to see its progress and actions.</p>
                 </div>
+                <span id="taskResultCount" class="mini-badge">0 tasks</span>
+            </div>
 
-                <div class="panel">
-                    <h2>Scanned Documents</h2>
-                    <p>View scanned files, their status, and reported issues.</p>
+            <div class="task-filters">
+                <input
+                    type="search"
+                    id="taskSearch"
+                    placeholder="Search tasks..."
+                    aria-label="Search tasks"
+                >
+                <select id="taskStatusFilter" aria-label="Filter by status">
+                    <option value="all">All statuses</option>
+                    <option value="running">In progress</option>
+                    <option value="paused">Paused</option>
+                    <option value="approval">Needs approval</option>
+                    <option value="completed">Completed</option>
+                    <option value="failed">Failed</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+                <select id="taskRiskFilter" aria-label="Filter by risk">
+                    <option value="all">All risk levels</option>
+                    <option value="low">Low risk</option>
+                    <option value="medium">Medium risk</option>
+                    <option value="high">High risk</option>
+                </select>
+                <button type="button" id="clearTaskFilters" class="secondary-button">
+                    Clear
+                </button>
+            </div>
 
-                    <div class="task-filters">
-                        <input
-                            type="search"
-                            id="fileSearch"
-                            placeholder="Search files..."
-                            aria-label="Search scanned files"
-                        >
+            <div id="taskHistoryList"></div>
+        </div>
 
-                        <select id="fileStatusFilter" aria-label="Filter by status">
-                            <option value="all">All files</option>
-                            <option value="issues">Files with issues</option>
-                            <option value="clean">No reported issues</option>
-                        </select>
-                    </div>
+        <aside id="taskDetailPanel" class="panel task-detail-panel"></aside>
+    </div>
 
-                    <div id="scannedFilesList">
-                        <p>No scanned files yet. Attach files to a task first.</p>
-                    </div>
-                </div>
-            </section>
+    <!-- Scanned documents (unchanged) -->
+    <div class="panel">
+        <h2>Scanned Documents</h2>
+        <p>View scanned files, their status, and reported issues.</p>
 
-            <!-- Approvals -->
-            <section id="approvalsView" class="page-view" hidden>
-                <div class="panel">
-                    <h2>Human Approvals</h2>
-                    <p>Review sensitive actions before the agent proceeds.</p>
-                    <p class="empty-state">No approval requests yet.</p>
-                </div>
-            </section>
+        <div class="task-filters">
+            <input
+                type="search"
+                id="fileSearch"
+                placeholder="Search files..."
+                aria-label="Search scanned files"
+            >
+            <select id="fileStatusFilter" aria-label="Filter by status">
+                <option value="all">All files</option>
+                <option value="issues">Files with issues</option>
+                <option value="clean">No reported issues</option>
+            </select>
+        </div>
 
-            <!-- Policies -->
-            <section id="policiesView" class="page-view" hidden>
-                <div class="panel">
-                    <h2>Policy Center</h2>
-                    <p>Manage the rules that govern agent actions.</p>
-                </div>
-            </section>
-
-            <!-- Evaluations -->
-            <section id="evaluationsView" class="page-view" hidden>
-                <div class="panel">
-                    <h2>Evaluations</h2>
-                    <p>Monitor task quality and policy compliance.</p>
-                </div>
-            </section>
+        <div id="scannedFilesList">
+            <p>No scanned files yet. Attach files to a task first.</p>
+        </div>
+    </div>
+</section>
 
             <!-- Smart Document Repair Studio -->
             <section id="repairView" class="page-view repair-view" hidden>
-                <div class="page-header repair-header">
-                    <div>
-                        <span class="eyebrow">DOCUMENT INTELLIGENCE</span>
-                        <h1>Smart Document Repair Studio</h1>
-                        <p>Review findings, explore suggested fixes, and decide what happens next.</p>
-                    </div>
-                    <div class="header-icon">✦</div>
-                </div>
-
-                <div class="repair-layout">
-                    <aside class="panel repair-sidebar">
-                        <div class="section-heading">
-                            <div>
-                                <span class="eyebrow">WORKSPACE</span>
-                                <h2>Select document</h2>
-                            </div>
-                            <span class="mini-badge">AI SCAN</span>
-                        </div>
-
-                        <label for="repairDocumentSelect">Scanned document</label>
-                        <select id="repairDocumentSelect">
-                            <option value="">Select a document</option>
-                        </select>
-
-                        <div class="repair-tip">
-                            <span class="tip-icon">✧</span>
-                            <div>
-                                <strong>Review before applying</strong>
-                                <p>Suggested changes are not applied until you accept them.</p>
-                            </div>
-                        </div>
-                    </aside>
-
-                    <div class="repair-main">
-                        <div class="repair-intro">
-                            <div>
-                                <span class="eyebrow">SCAN RESULTS</span>
-                                <h2>Findings &amp; suggestions</h2>
-                                <p>Inspect each issue and choose how to resolve it.</p>
-                            </div>
-
-                            <span class="status-pill">
-                                <span class="status-dot"></span>
-                                Human review
-                            </span>
-                        </div>
-
-                        <div id="repairFindings" class="repair-findings">
-                            <div class="empty-state repair-empty">
-                                <span class="empty-icon">⌕</span>
-                                <h3>No document selected</h3>
-                                <p>Select a scanned document to view its findings.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Evaluation Playground -->
-            <section id="playgroundView" class="page-view playground-view" hidden>
-                <div class="page-header playground-header">
-                    <div>
-                        <span class="eyebrow">AGENT TESTING LAB</span>
-                        <h1>Evaluation Playground</h1>
-                        <p>Compare how policy settings affect agent performance, risk, and approval requirements.</p>
-                    </div>
-                    <div class="header-icon">⚡</div>
-                </div>
-
-                <div class="playground-layout">
-                    <div class="panel evaluation-config">
-                        <div class="section-heading">
-                            <div>
-                                <span class="eyebrow">CONFIGURATION</span>
-                                <h2>Build a test</h2>
-                            </div>
-                            <span class="config-icon">⚙️</span>
-                        </div>
-
-                        <label for="evaluationScenario">Test scenario</label>
-                        <select id="evaluationScenario">
-                            <option value="document">Document review</option>
-                            <option value="sensitive">Sensitive action</option>
-                            <option value="external">External data sharing</option>
-                        </select>
-
-                        <label for="evaluationPolicy">Policy strictness</label>
-                        <select id="evaluationPolicy">
-                            <option value="balanced">Balanced</option>
-                            <option value="strict">Strict</option>
-                            <option value="permissive">Permissive</option>
-                        </select>
-
-                        <div class="policy-hint">
-                            <strong>Policy controls agent behavior</strong>
-                            <p>Compare how different policy settings change task completion and risk.</p>
-                        </div>
-
-                        <button
-                            type="button"
-                            class="primary-button run-evaluation-btn"
-                            id="runEvaluation"
-                        >
-                            ▶️ Run evaluation
-                        </button>
-                    </div>
-
-                    <div class="panel evaluation-results-panel">
-                        <div class="section-heading">
-                            <div>
-                                <span class="eyebrow">SIMULATION OUTPUT</span>
-                                <h2>Evaluation results</h2>
-                            </div>
-                            <span class="results-badge">DEMO</span>
-                        </div>
-
-                        <div id="evaluationResults" class="evaluation-results">
-                            <div class="empty-state evaluation-empty">
-                                <span class="empty-icon">⌁</span>
-                                <h3>Ready to evaluate</h3>
-                                <p>Choose a scenario and policy, then run the test to view results.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="evaluation-note">
-                    <span>ⓘ</span>
-                    <p>Results are simulated for this prototype, not measurements from a live AI agent.</p>
-                </div>
-            </section>
-
-        </main>
+    <div class="page-header repair-header">
+        <div>
+            <span class="eyebrow">DOCUMENT INTELLIGENCE</span>
+            <h1>Smart Document Repair Studio</h1>
+            <p>Review findings, explore suggested fixes, and decide what happens next.</p>
+        </div>
+        <div class="header-icon">✦</div>
     </div>
 
+    <div class="repair-layout">
+        <aside class="panel repair-sidebar">
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">WORKSPACE</span>
+                    <h2>Select document</h2>
+                </div>
+                <span class="mini-badge">AI SCAN</span>
+            </div>
+
+            <label for="repairFileInput">Choose a file</label>
+            <div class="repair-upload">
+                <input
+                    type="file"
+                    id="repairFileInput"
+                    accept=".pdf,.doc,.docx,.txt,.md,.csv,.png,.jpg,.jpeg"
+                >
+                <button
+                    type="button"
+                    id="repairScanButton"
+                    class="primary-button"
+                >
+                    Scan document
+                </button>
+            </div>
+            <p id="repairUploadStatus" class="file-upload-hint" role="status"></p>
+
+            <!-- Hidden on purpose: kept so repair.js doesn't break -->
+            <select id="repairDocumentSelect" hidden>
+                <option value="">Select a document</option>
+            </select>
+
+            <div class="repair-tip">
+                <span class="tip-icon">✧</span>
+                <div>
+                    <strong>Review before applying</strong>
+                    <p>Suggested changes are not applied until you accept them.</p>
+                </div>
+            </div>
+        </aside>
+
+        <div class="repair-main">
+            <div class="repair-intro">
+                <div>
+                    <span class="eyebrow">SCAN RESULTS</span>
+                    <h2>Findings &amp; suggestions</h2>
+                    <p>Inspect each issue and choose how to resolve it.</p>
+                </div>
+
+                <span class="status-pill">
+                    <span class="status-dot"></span>
+                    Human review
+                </span>
+            </div>
+
+            <div id="repairFindings" class="repair-findings">
+                <div class="empty-state repair-empty">
+                    <span class="empty-icon">⌕</span>
+                    <h3>No document selected</h3>
+                    <p>Choose a file and click Scan document to view its findings.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
     <!-- JavaScript -->
     <script src="js/auth.js"></script>
     <script src="js/main.js"></script>
     <script src="js/dashboard.js"></script>
     <script src="js/tasks.js"></script>
     <script src="js/file-scanner.js"></script>
-    <script src="js/evaluations.js"></script>
+    <script src="js/repair.js"></script>
+    <script src="js/repair-upload.js"></script>
+    <script src="js/scanned-files.js"></script>
 
 </body>
 </html>
