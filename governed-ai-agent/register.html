@@ -1,0 +1,112 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | ShieldAI</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/auth.css">
+</head>
+
+<body class="auth-page">
+    <main class="auth-container">
+        <section class="auth-brand">
+            <a href="login.html" class="brand">
+                <span class="brand-icon">⬡</span>
+                <span>ShieldAI</span>
+            </a>
+
+            <div class="auth-brand-content">
+                <p class="eyebrow">GOVERNED AI WORKSPACE</p>
+                <h1>Your workspace.<br>Your control.</h1>
+                <p>Create an account to manage tasks with policy enforcement and human oversight.</p>
+            </div>
+
+            <p class="auth-footer-note">Secure access to your AI workspace.</p>
+        </section>
+
+        <section class="auth-form-section">
+            <div class="auth-form-wrapper">
+                <div class="auth-mobile-brand">
+                    <a href="login.html" class="brand">
+                        <span class="brand-icon">⬡</span>
+                        <span>ShieldAI</span>
+                    </a>
+                </div>
+
+                <div class="auth-heading">
+                    <h2>Create your account</h2>
+                    <p>Register to get started with ShieldAI.</p>
+                </div>
+
+                <form id="registerForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="registerName">Full name</label>
+                        <input
+                            type="text"
+                            id="registerName"
+                            name="name"
+                            placeholder="Your name"
+                            autocomplete="name"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="registerEmail">Email address</label>
+                        <input
+                            type="email"
+                            id="registerEmail"
+                            name="email"
+                            placeholder="you@example.com"
+                            autocomplete="email"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="registerPassword">Password</label>
+                        <input
+                            type="password"
+                            id="registerPassword"
+                            name="password"
+                            placeholder="At least 8 characters"
+                            autocomplete="new-password"
+                            minlength="8"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm password</label>
+                        <input
+                            type="password"
+                            id="confirmPassword"
+                            name="confirmPassword"
+                            placeholder="Re-enter your password"
+                            autocomplete="new-password"
+                            minlength="8"
+                            required
+                        >
+                    </div>
+
+                    <p id="registerMessage" class="auth-message" role="status"></p>
+
+                    <button type="submit" class="primary-button auth-submit">
+                        Create account
+                    </button>
+                </form>
+
+                <p class="auth-switch">
+                    Already have an account?
+                    <a href="login.html">Sign in</a>
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/register.js"></script>
+</body>
+</html>
