@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 
+from app.routes.approvals import router as approvals_router
 from app.routes.documents import router as documents_router
 from app.routes.expenses import router as expenses_router
 
@@ -9,6 +10,7 @@ app = FastAPI(
     version="1.0.0"
 )
 
+app.include_router(approvals_router)
 app.include_router(documents_router)
 app.include_router(expenses_router)
 
