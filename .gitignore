@@ -1,17 +1,27 @@
-# Python virtual environment
+
+# Python virtual environments
 .venv/
 venv/
 backend/.venv/
 
 # Python cache
 __pycache__/
-*.pyc
+*.py[cod]
+
+# SQLite database
+backend/documents.db
+*.sqlite3
 
 # Uploaded documents
 backend/storage/uploads/*
 
 # Environment variables
 .env
+.env.*
 
 # IDE settings
 .vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
