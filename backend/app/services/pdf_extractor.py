@@ -1,20 +1,22 @@
-import pymupdf
+from pypdf import PdfReader
 
 
 def extract_text_from_pdf(file_path: str) -> str:
-    """
-    Extract text from a PDF document.
-    """
+    """Extract text from a PDF document."""
 
     try:
-        extracted_text = ""
+        reader = PdfReader(file_path)
+        extracted_pages = []
 
-        with pymupdf.open(file_path) as pdf_document:
+        if reader.is_encrypted:
+            raise ValueError("Password-protected PDFs are not supported.")
 
-            for page in pdf_document:
-                extracted_text += page.get_text()
+        for page in reader.pages:
+            extracted_pages.append(page.extract_text() or "")
 
-        return extracted_text.strip()
+        return "\n".join(extracted_pages).strip()
 
+    except ValueError:
+        raise
     except Exception as error:
         raise ValueError(f"PDF extraction failed: {str(error)}")
