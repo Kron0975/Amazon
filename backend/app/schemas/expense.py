@@ -15,3 +15,4 @@ class ExpenseResponse(BaseModel):
     expense_id: str
     status: str
     message: str
+    approval_id: Optional[int] = None
