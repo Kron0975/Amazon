@@ -3,6 +3,8 @@ from typing import Optional
 
 
 class ExpenseCreate(BaseModel):
+    document_id: str = Field(min_length=36, max_length=36)
+
     employee_name: str = Field(min_length=2)
     amount: float = Field(gt=0)
     merchant: str = Field(min_length=2)
