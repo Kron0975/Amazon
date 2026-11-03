@@ -1,0 +1,75 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Governed AI Agent</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app">
+        <aside class="sidebar">
+            <div class="logo">ShieldAI</div>
+
+            <nav>
+                <a href="#" class="nav-link active">Dashboard</a>
+                <a href="#" class="nav-link">Tasks</a>
+                <a href="#" class="nav-link">Approvals</a>
+                <a href="#" class="nav-link">Policies</a>
+                <a href="#" class="nav-link">Evaluations</a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <h1>Dashboard</h1>
+                <span class="status">System Protected</span>
+            </header>
+
+            <section class="welcome">
+                <h2>Governed AI Agent</h2>
+                <p>Automate tasks with safety, transparency, and human oversight.</p>
+            </section>
+
+            <section class="stats">
+                <article class="stat-card">
+                    <h3>Tasks Completed</h3>
+                    <p>24</p>
+                </article>
+
+                <article class="stat-card">
+                    <h3>Pending Approvals</h3>
+                    <p>3</p>
+                </article>
+
+                <article class="stat-card">
+                    <h3>Policy Violations Blocked</h3>
+                    <p>8</p>
+                </article>
+
+                <article class="stat-card">
+                    <h3>Success Rate</h3>
+                    <p>96%</p>
+                </article>
+            </section>
+
+            <section class="task-section">
+                <h2>Start a New Task</h2>
+                <textarea id="taskInput"
+                    placeholder="Describe what you want the AI agent to do..."></textarea>
+                <button id="startTask">Start Task</button>
+            </section>
+
+            <section class="activity-section">
+                <h2>Recent Activity</h2>
+                <div id="activityList">
+                    <p>No recent tasks.</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
