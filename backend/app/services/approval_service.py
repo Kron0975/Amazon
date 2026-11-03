@@ -1,5 +1,4 @@
 from datetime import datetime, timezone
-
 from sqlalchemy.orm import Session
 
 from app.models.approval import Approval
@@ -7,12 +6,12 @@ from app.models.approval import Approval
 
 def create_approval_request(
     db: Session,
-    document_id: str,
+    expense_id: str,
     action_name: str,
     reason: str
 ):
     approval = Approval(
-        document_id=document_id,
+        expense_id=expense_id,
         action_name=action_name,
         reason=reason,
         status="pending"
