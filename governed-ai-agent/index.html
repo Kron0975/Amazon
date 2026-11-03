@@ -1,4 +1,4 @@
-
+ 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,7 +13,7 @@
 
 <body>
 
-    <!-- Authentication screen -->
+    <!-- Authentication -->
     <section id="authView" class="auth-view">
         <div class="auth-card">
             <div class="auth-brand">
@@ -32,7 +32,12 @@
 
                 <div class="form-group">
                     <label for="authEmail">Email</label>
-                    <input id="authEmail" type="email" autocomplete="email" required>
+                    <input
+                        id="authEmail"
+                        type="email"
+                        autocomplete="email"
+                        required
+                    >
                 </div>
 
                 <div class="form-group">
@@ -139,6 +144,7 @@
                     <div class="banner-icon">⬡</div>
                 </div>
 
+                <!-- Dashboard statistics -->
                 <div class="stats-grid">
                     <article class="stat-card">
                         <p>Total Tasks</p>
@@ -165,12 +171,12 @@
                     </article>
                 </div>
 
-                <!-- Create task -->
+                <!-- Create task and attach files -->
                 <section class="panel task-form-panel">
                     <div class="section-heading">
                         <div>
                             <h2>Create a task</h2>
-                            <p>Describe the task you want your agent to perform.</p>
+                            <p>Describe what the agent should do and attach relevant files.</p>
                         </div>
                     </div>
 
@@ -179,9 +185,32 @@
 
                         <textarea
                             id="taskInput"
-                            placeholder="Example: Review my admission documents and identify missing information..."
+                            placeholder="Example: Review this document, identify missing information, and suggest corrections..."
                             required
                         ></textarea>
+
+                        <div class="task-file-upload">
+                            <label for="taskFileInput">Attach files</label>
+
+                            <div class="task-file-controls">
+                                <input
+                                    type="file"
+                                    id="taskFileInput"
+                                    multiple
+                                >
+
+                                <span class="file-upload-hint">
+                                    Select one or more files of any type
+                                </span>
+                            </div>
+
+                            <div
+                                id="taskAttachedFiles"
+                                class="task-attached-files"
+                            >
+                                <p class="empty-state">No files attached.</p>
+                            </div>
+                        </div>
 
                         <div class="form-footer">
                             <span>Agent actions are subject to policy checks.</span>
@@ -215,6 +244,7 @@
                         </p>
                     </div>
                 </section>
+
             </section>
 
             <!-- Task Center -->
@@ -251,7 +281,7 @@
                     </div>
 
                     <div id="scannedFilesList">
-                        <p>No scanned files yet. Scan files from the Dashboard first.</p>
+                        <p>No scanned files yet. Attach files to a task first.</p>
                     </div>
                 </div>
             </section>
@@ -283,7 +313,6 @@
 
             <!-- Smart Document Repair Studio -->
             <section id="repairView" class="page-view repair-view" hidden>
-
                 <div class="page-header repair-header">
                     <div>
                         <span class="eyebrow">DOCUMENT INTELLIGENCE</span>
@@ -294,7 +323,6 @@
                 </div>
 
                 <div class="repair-layout">
-
                     <aside class="panel repair-sidebar">
                         <div class="section-heading">
                             <div>
@@ -343,9 +371,8 @@
                 </div>
             </section>
 
-            <!-- Agent Evaluation Playground -->
+            <!-- Evaluation Playground -->
             <section id="playgroundView" class="page-view playground-view" hidden>
-
                 <div class="page-header playground-header">
                     <div>
                         <span class="eyebrow">AGENT TESTING LAB</span>
@@ -356,7 +383,6 @@
                 </div>
 
                 <div class="playground-layout">
-
                     <div class="panel evaluation-config">
                         <div class="section-heading">
                             <div>
@@ -422,7 +448,7 @@
         </main>
     </div>
 
-    <!-- JavaScript files -->
+    <!-- JavaScript -->
     <script src="js/auth.js"></script>
     <script src="js/main.js"></script>
     <script src="js/dashboard.js"></script>
