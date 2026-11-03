@@ -1,9 +1,10 @@
 import os
 import uuid
 
+
 from pathlib import Path
 from fastapi import APIRouter, UploadFile, File, HTTPException
-
+from app.services.pdf_extractor import extract_text_from_pdf
 
 router = APIRouter(
     prefix="/api/v1/documents",
@@ -98,3 +99,40 @@ async def upload_document(file: UploadFile = File(...)):
         "file_size": file_size,
         "status": "uploaded"
     }
+
+@router.get("/{document_id}/extract")
+async def extract_document_text(document_id: str):
+
+    # Find the uploaded PDF
+    matching_files = list(
+        UPLOAD_DIR.glob(f"{document_id}.pdf")
+    )
+
+    if not matching_files:
+        raise HTTPException(
+            status_code=404,
+            detail="PDF document not found"
+        )
+
+    file_path = matching_files[0]
+
+    try:
+        extracted_text = extract_text_from_pdf(str(file_path))
+
+        if not extracted_text:
+            raise HTTPException(
+                status_code=422,
+                detail="No readable text found in this PDF"
+            )
+
+        return {
+            "success": True,
+            "document_id": document_id,
+            "extracted_text": extracted_text
+        }
+
+    except ValueError as error:
+        raise HTTPException(
+            status_code=422,
+            detail=str(error)
+        )
