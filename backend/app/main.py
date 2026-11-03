@@ -3,6 +3,8 @@ from fastapi import FastAPI
 from app.routes.approvals import router as approvals_router
 from app.routes.documents import router as documents_router
 from app.routes.expenses import router as expenses_router
+from app.routes.approvals import router as approvals_router
+from app.routes.evaluation import router as evaluation_router
 
 app = FastAPI(
     title="Amazon Safe Agent",
@@ -13,6 +15,8 @@ app = FastAPI(
 app.include_router(approvals_router)
 app.include_router(documents_router)
 app.include_router(expenses_router)
+app.include_router(approvals_router)
+app.include_router(evaluation_router)
 
 
 @app.get("/")

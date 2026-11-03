@@ -12,7 +12,21 @@ class Approval(Base):
     document_id = Column(
         String(36),
         ForeignKey("documents.document_id"),
-        nullable=False
+        nullable=True
+    )
+
+    expense_id = Column(
+        String(36),
+        ForeignKey("expenses.expense_id"),
+        nullable=True,
+        index=True
+    )
+
+    task_id = Column(
+        Integer,
+        ForeignKey("agent_tasks.id"),
+        nullable=True,
+        index=True
     )
 
     action_name = Column(String(100), nullable=False)
