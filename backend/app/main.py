@@ -1,21 +1,22 @@
 from fastapi import FastAPI
-from app.routes.documents import router as documents_router
 
+from app.routes.documents import router as documents_router
+from app.routes.expenses import router as expenses_router
 
 app = FastAPI(
-    title="Amazon Document Review API",
-    description="Backend for AI-powered document review and repair",
+    title="Amazon Safe Agent",
+    description="A policy-controlled AI agent for safe expense claim processing",
     version="1.0.0"
 )
 
-
 app.include_router(documents_router)
+app.include_router(expenses_router)
 
 
 @app.get("/")
 def home():
     return {
-        "message": "Amazon Document Review Backend is running!",
+        "message": "Amazon Safe Agent Backend is running!",
         "status": "success"
     }
 
