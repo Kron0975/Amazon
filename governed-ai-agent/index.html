@@ -136,7 +136,7 @@
                             <p>Your latest agent tasks and their statuses.</p>
                         </div>
 
-                        <button class="secondary-button" data-view="tasks">
+                        <button type="button" class="secondary-button" data-view="tasks">
                             View all tasks
                         </button>
                     </div>
@@ -145,18 +145,48 @@
                         <p class="empty-state">No tasks yet. Create your first task above.</p>
                     </div>
                 </section>
-
             </section>
 
-            <!-- Other views will be added in later steps -->
+            <!-- Task Center -->
             <section id="tasksView" class="page-view" hidden>
+                <div class="page-header">
+                    <h1>Task Center</h1>
+                    <p>Track submitted tasks, completed work, and scanned documents.</p>
+                </div>
+
                 <div class="panel">
-                    <h2>Task Management</h2>
-                    <p>View current, pending, and completed tasks.</p>
-                    <p class="empty-state">Your tasks will appear here.</p>
+                    <h2>Task History</h2>
+                    <div id="taskHistoryList">
+                        <p>No tasks submitted yet.</p>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h2>Scanned Documents</h2>
+                    <p>View scanned files, their status, and reported issues.</p>
+
+                    <div class="task-filters">
+                        <input
+                            type="search"
+                            id="fileSearch"
+                            placeholder="Search files..."
+                            aria-label="Search scanned files"
+                        >
+
+                        <select id="fileStatusFilter" aria-label="Filter by status">
+                            <option value="all">All files</option>
+                            <option value="issues">Files with issues</option>
+                            <option value="clean">No reported issues</option>
+                        </select>
+                    </div>
+
+                    <div id="scannedFilesList">
+                        <p>No scanned files yet. Scan files from the Dashboard first.</p>
+                    </div>
                 </div>
             </section>
 
+            <!-- Approvals -->
             <section id="approvalsView" class="page-view" hidden>
                 <div class="panel">
                     <h2>Human Approvals</h2>
@@ -165,6 +195,7 @@
                 </div>
             </section>
 
+            <!-- Policies -->
             <section id="policiesView" class="page-view" hidden>
                 <div class="panel">
                     <h2>Policy Center</h2>
@@ -172,6 +203,7 @@
                 </div>
             </section>
 
+            <!-- Evaluations -->
             <section id="evaluationsView" class="page-view" hidden>
                 <div class="panel">
                     <h2>Evaluations</h2>
@@ -182,7 +214,11 @@
         </main>
     </div>
 
+    <!-- JavaScript -->
     <script src="js/main.js"></script>
     <script src="js/dashboard.js"></script>
+    <script src="js/tasks.js"></script>
+    <script src="js/file-scanner.js"></script>
 </body>
 </html>
+

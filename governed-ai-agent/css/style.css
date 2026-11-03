@@ -282,3 +282,78 @@ button {
         display: none;
     }
 }
+.task-filters {
+    display: flex;
+    gap: 12px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+.task-filters input,
+.task-filters select {
+    padding: 10px 12px;
+    border: 1px solid var(--border-color, #ddd);
+    border-radius: 8px;
+    background: var(--panel-bg, white);
+}
+
+.review-file-card {
+    padding: 18px;
+    margin-bottom: 14px;
+    border: 1px solid var(--border-color, #e5e7eb);
+    border-radius: 12px;
+    background: var(--panel-bg, white);
+}
+
+.review-file-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.review-file-header h3 {
+    margin: 0 0 6px;
+    overflow-wrap: anywhere;
+}
+
+.review-file-header p {
+    margin: 0;
+    color: #6b7280;
+}
+
+.review-file-badge {
+    font-size: 0.85rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.review-file-badge.clean {
+    color: #15803d;
+}
+
+.review-file-badge.has-issues,
+.issue-severity {
+    color: #b45309;
+}
+
+.review-file-card details {
+    margin-top: 16px;
+}
+
+.review-file-card summary {
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.issue-list {
+    padding-left: 20px;
+}
+
+.issue-list li {
+    margin-top: 12px;
+}
+
+.issue-list p {
+    margin: 6px 0;
+}
