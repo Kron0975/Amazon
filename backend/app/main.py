@@ -1,6 +1,7 @@
 from fastapi import FastAPI
+from app.routes.documents import router as documents_router
 
-# Create FastAPI application
+
 app = FastAPI(
     title="Amazon Document Review API",
     description="Backend for AI-powered document review and repair",
@@ -8,7 +9,10 @@ app = FastAPI(
 )
 
 
-# Home endpoint
+# Register document routes
+app.include_router(documents_router)
+
+
 @app.get("/")
 def home():
     return {
@@ -17,7 +21,6 @@ def home():
     }
 
 
-# Health check endpoint
 @app.get("/health")
 def health_check():
     return {
