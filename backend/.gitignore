@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Environment variables
+.env
+
+# Local database
+documents.db
+*.db
+
+# Uploaded files
+storage/uploads/
+
+# Local backup files
+*.backup.py
