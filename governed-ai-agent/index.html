@@ -1,21 +1,73 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ShieldAI | Governed Agent</title>
+    <title>AMAZON AI AGENT | Governed Agent</title>
 
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/auth.css">
 </head>
 
 <body>
-    <div class="app">
+
+    <!-- Authentication screen -->
+    <section id="authView" class="auth-view">
+        <div class="auth-card">
+            <div class="auth-brand">
+                <span class="brand-icon">⬡</span>
+                <span>AMAZON AI AGENT</span>
+            </div>
+
+            <h1 id="authTitle">Welcome back</h1>
+            <p id="authSubtitle">Sign in to continue to your workspace.</p>
+
+            <form id="authForm">
+                <div class="form-group" id="nameGroup" hidden>
+                    <label for="authName">Full name</label>
+                    <input id="authName" type="text" autocomplete="name">
+                </div>
+
+                <div class="form-group">
+                    <label for="authEmail">Email</label>
+                    <input id="authEmail" type="email" autocomplete="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="authPassword">Password</label>
+                    <input
+                        id="authPassword"
+                        type="password"
+                        autocomplete="current-password"
+                        minlength="6"
+                        required
+                    >
+                </div>
+
+                <p id="authError" class="auth-error" role="alert"></p>
+
+                <button id="authSubmit" class="primary-button" type="submit">
+                    Sign in
+                </button>
+            </form>
+
+            <p class="auth-switch">
+                <span id="authSwitchText">Don't have an account?</span>
+                <button id="authSwitchButton" type="button">Register</button>
+            </p>
+        </div>
+    </section>
+
+    <!-- Main application -->
+    <div class="app" id="appShell" hidden>
+
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="brand">
                 <span class="brand-icon">⬡</span>
-                <span>ShieldAI</span>
+                <span>AMAZON AI AGENT</span>
             </div>
 
             <p class="nav-label">WORKSPACE</p>
@@ -48,20 +100,21 @@
                 <a href="#" class="nav-link" data-view="playground">
                     <span>⚡</span> Evaluation Playground
                 </a>
-
-                <a href="login.html" class="nav-link">
-                    <span>↪</span> Login
-                </a>
             </nav>
 
             <div class="sidebar-footer">
                 <span class="status-dot"></span>
                 All systems operational
+
+                <button id="logoutButton" class="logout-button" type="button">
+                    ↪ Log out
+                </button>
             </div>
         </aside>
 
         <!-- Main content -->
         <main class="main-content">
+
             <header class="topbar">
                 <div>
                     <p class="eyebrow">WORKSPACE / OVERVIEW</p>
@@ -69,13 +122,14 @@
                 </div>
 
                 <div class="user-profile">
-                    <div class="avatar">U</div>
-                    <span>Workspace User</span>
+                    <div class="avatar" id="userAvatar">U</div>
+                    <span id="userDisplayName">Workspace User</span>
                 </div>
             </header>
 
             <!-- Dashboard -->
             <section id="dashboardView" class="page-view">
+
                 <div class="welcome-banner">
                     <div>
                         <p class="eyebrow">GOVERNED AI WORKSPACE</p>
@@ -156,115 +210,30 @@
                     </div>
 
                     <div id="recentTasks" class="recent-tasks">
-                        <p class="empty-state">No tasks yet. Create your first task above.</p>
+                        <p class="empty-state">
+                            No tasks yet. Create your first task above.
+                        </p>
                     </div>
                 </section>
             </section>
 
-            <!-- Interactive Task Center -->
+            <!-- Task Center -->
             <section id="tasksView" class="page-view" hidden>
                 <div class="page-header">
-                    <div>
-                        <p class="eyebrow">WORKSPACE / TASK MANAGEMENT</p>
-                        <h1>Task Center</h1>
-                        <p>Search, monitor, and manage your agent tasks.</p>
-                    </div>
-                    <button type="button" class="primary-button" id="createTaskFromTasks">
-                        + New task
-                    </button>
+                    <h1>Task Center</h1>
+                    <p>Track submitted tasks, completed work, and scanned documents.</p>
                 </div>
 
-                <div class="task-summary-grid">
-                    <article class="task-summary-card">
-                        <span>Total tasks</span>
-                        <strong id="taskCountTotal">0</strong>
-                    </article>
-                    <article class="task-summary-card">
-                        <span>In progress</span>
-                        <strong id="taskCountRunning">0</strong>
-                    </article>
-                    <article class="task-summary-card">
-                        <span>Needs attention</span>
-                        <strong id="taskCountAttention">0</strong>
-                    </article>
-                    <article class="task-summary-card">
-                        <span>Completed</span>
-                        <strong id="taskCountCompleted">0</strong>
-                    </article>
-                </div>
-
-                <div class="panel task-center-panel">
-                    <div class="task-toolbar">
-                        <div class="task-search-wrap">
-                            <label for="taskSearch">Search tasks</label>
-                            <input
-                                type="search"
-                                id="taskSearch"
-                                placeholder="Search by task description or ID..."
-                            >
-                        </div>
-
-                        <div class="task-filter-wrap">
-                            <label for="taskStatusFilter">Status</label>
-                            <select id="taskStatusFilter">
-                                <option value="all">All statuses</option>
-                                <option value="running">In progress</option>
-                                <option value="paused">Paused</option>
-                                <option value="approval">Needs approval</option>
-                                <option value="completed">Completed</option>
-                                <option value="failed">Failed</option>
-                                <option value="cancelled">Cancelled</option>
-                            </select>
-                        </div>
-
-                        <div class="task-filter-wrap">
-                            <label for="taskRiskFilter">Risk level</label>
-                            <select id="taskRiskFilter">
-                                <option value="all">All risk levels</option>
-                                <option value="low">Low</option>
-                                <option value="medium">Medium</option>
-                                <option value="high">High</option>
-                            </select>
-                        </div>
-
-                        <button type="button" class="secondary-button" id="clearTaskFilters">
-                            Clear filters
-                        </button>
-                    </div>
-
-                    <div class="task-center-content">
-                        <div class="task-history-column">
-                            <div class="task-list-heading">
-                                <h2>Task history</h2>
-                                <span id="taskResultCount">0 tasks</span>
-                            </div>
-
-                            <div id="taskHistoryList" class="task-history-list">
-                                <div class="empty-state">
-                                    <h3>No tasks yet</h3>
-                                    <p>Create a task from the Dashboard to see it here.</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <aside class="task-detail-panel" id="taskDetailPanel">
-                            <div class="task-detail-empty">
-                                <span class="task-detail-empty-icon">☷</span>
-                                <h3>Select a task</h3>
-                                <p>Choose a task from the list to view its progress and available actions.</p>
-                            </div>
-                        </aside>
-                    </div>
-                </div>
-
-                <!-- Scanned documents -->
                 <div class="panel">
-                    <div class="section-heading">
-                        <div>
-                            <h2>Scanned Documents</h2>
-                            <p>View scanned files, their status, and reported issues.</p>
-                        </div>
+                    <h2>Task History</h2>
+                    <div id="taskHistoryList">
+                        <p>No tasks submitted yet.</p>
                     </div>
+                </div>
+
+                <div class="panel">
+                    <h2>Scanned Documents</h2>
+                    <p>View scanned files, their status, and reported issues.</p>
 
                     <div class="task-filters">
                         <input
@@ -314,6 +283,7 @@
 
             <!-- Smart Document Repair Studio -->
             <section id="repairView" class="page-view repair-view" hidden>
+
                 <div class="page-header repair-header">
                     <div>
                         <span class="eyebrow">DOCUMENT INTELLIGENCE</span>
@@ -324,6 +294,7 @@
                 </div>
 
                 <div class="repair-layout">
+
                     <aside class="panel repair-sidebar">
                         <div class="section-heading">
                             <div>
@@ -374,6 +345,7 @@
 
             <!-- Agent Evaluation Playground -->
             <section id="playgroundView" class="page-view playground-view" hidden>
+
                 <div class="page-header playground-header">
                     <div>
                         <span class="eyebrow">AGENT TESTING LAB</span>
@@ -384,13 +356,14 @@
                 </div>
 
                 <div class="playground-layout">
+
                     <div class="panel evaluation-config">
                         <div class="section-heading">
                             <div>
                                 <span class="eyebrow">CONFIGURATION</span>
                                 <h2>Build a test</h2>
                             </div>
-                            <span class="config-icon">⚙</span>
+                            <span class="config-icon">⚙️</span>
                         </div>
 
                         <label for="evaluationScenario">Test scenario</label>
@@ -417,7 +390,7 @@
                             class="primary-button run-evaluation-btn"
                             id="runEvaluation"
                         >
-                            ▶ Run evaluation
+                            ▶️ Run evaluation
                         </button>
                     </div>
 
@@ -445,15 +418,17 @@
                     <p>Results are simulated for this prototype, not measurements from a live AI agent.</p>
                 </div>
             </section>
+
         </main>
     </div>
 
     <!-- JavaScript files -->
+    <script src="js/auth.js"></script>
     <script src="js/main.js"></script>
     <script src="js/dashboard.js"></script>
     <script src="js/tasks.js"></script>
     <script src="js/file-scanner.js"></script>
     <script src="js/evaluations.js"></script>
+
 </body>
 </html>
-
