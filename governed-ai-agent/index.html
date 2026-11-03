@@ -1,0 +1,188 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShieldAI | Governed Agent</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+
+<body>
+    <div class="app">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="brand">
+                <span class="brand-icon">⬡</span>
+                <span>ShieldAI</span>
+            </div>
+
+            <p class="nav-label">WORKSPACE</p>
+
+            <nav class="navigation">
+                <a href="#" class="nav-link active" data-view="dashboard">
+                    <span>▦</span> Dashboard
+                </a>
+
+                <a href="#" class="nav-link" data-view="tasks">
+                    <span>☷</span> Tasks
+                </a>
+
+                <a href="#" class="nav-link" data-view="approvals">
+                    <span>✓</span> Approvals
+                </a>
+
+                <a href="#" class="nav-link" data-view="policies">
+                    <span>◇</span> Policies
+                </a>
+
+                <a href="#" class="nav-link" data-view="evaluations">
+                    <span>▥</span> Evaluations
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <span class="status-dot"></span>
+                All systems operational
+            </div>
+        </aside>
+
+        <!-- Main content -->
+        <main class="main-content">
+
+            <header class="topbar">
+                <div>
+                    <p class="eyebrow">WORKSPACE / OVERVIEW</p>
+                    <h1 id="pageTitle">Dashboard</h1>
+                </div>
+
+                <div class="user-profile">
+                    <div class="avatar">U</div>
+                    <span>Workspace User</span>
+                </div>
+            </header>
+
+            <!-- Dashboard view -->
+            <section id="dashboardView" class="page-view">
+
+                <div class="welcome-banner">
+                    <div>
+                        <p class="eyebrow">GOVERNED AI WORKSPACE</p>
+                        <h2>Automate with confidence.</h2>
+                        <p>Execute tasks with policy enforcement and human oversight.</p>
+                    </div>
+                    <div class="banner-icon">⬡</div>
+                </div>
+
+                <div class="stats-grid">
+                    <article class="stat-card">
+                        <p>Total Tasks</p>
+                        <h3 id="totalTasks">0</h3>
+                        <span>Tasks submitted</span>
+                    </article>
+
+                    <article class="stat-card">
+                        <p>In Progress</p>
+                        <h3 id="runningTasks">0</h3>
+                        <span>Currently executing</span>
+                    </article>
+
+                    <article class="stat-card">
+                        <p>Pending Approvals</p>
+                        <h3 id="pendingApprovals">0</h3>
+                        <span>Awaiting human review</span>
+                    </article>
+
+                    <article class="stat-card">
+                        <p>Policy Blocks</p>
+                        <h3 id="policyBlocks">0</h3>
+                        <span>Unsafe actions prevented</span>
+                    </article>
+                </div>
+
+                <section class="panel task-form-panel">
+                    <div class="section-heading">
+                        <div>
+                            <h2>Create a task</h2>
+                            <p>Describe the task you want your agent to perform.</p>
+                        </div>
+                    </div>
+
+                    <form id="taskForm">
+                        <label for="taskInput">Task description</label>
+
+                        <textarea
+                            id="taskInput"
+                            placeholder="Example: Review my admission documents and identify missing information..."
+                            required
+                        ></textarea>
+
+                        <div class="form-footer">
+                            <span>Agent actions are subject to policy checks.</span>
+                            <button type="submit" class="primary-button">
+                                + Start task
+                            </button>
+                        </div>
+                    </form>
+                </section>
+
+                <section class="panel">
+                    <div class="section-heading">
+                        <div>
+                            <h2>Recent activity</h2>
+                            <p>Your latest agent tasks and their statuses.</p>
+                        </div>
+
+                        <button class="secondary-button" data-view="tasks">
+                            View all tasks
+                        </button>
+                    </div>
+
+                    <div id="recentTasks" class="recent-tasks">
+                        <p class="empty-state">No tasks yet. Create your first task above.</p>
+                    </div>
+                </section>
+
+            </section>
+
+            <!-- Other views will be added in later steps -->
+            <section id="tasksView" class="page-view" hidden>
+                <div class="panel">
+                    <h2>Task Management</h2>
+                    <p>View current, pending, and completed tasks.</p>
+                    <p class="empty-state">Your tasks will appear here.</p>
+                </div>
+            </section>
+
+            <section id="approvalsView" class="page-view" hidden>
+                <div class="panel">
+                    <h2>Human Approvals</h2>
+                    <p>Review sensitive actions before the agent proceeds.</p>
+                    <p class="empty-state">No approval requests yet.</p>
+                </div>
+            </section>
+
+            <section id="policiesView" class="page-view" hidden>
+                <div class="panel">
+                    <h2>Policy Center</h2>
+                    <p>Manage the rules that govern agent actions.</p>
+                </div>
+            </section>
+
+            <section id="evaluationsView" class="page-view" hidden>
+                <div class="panel">
+                    <h2>Evaluations</h2>
+                    <p>Monitor task quality and policy compliance.</p>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
