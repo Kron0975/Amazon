@@ -9,6 +9,7 @@ from app.routes.documents import router as documents_router
 from app.routes.expenses import router as expenses_router
 from app.routes.approvals import router as approvals_router
 from app.routes.evaluation import router as evaluation_router
+from app.routes.audit import router as audit_router
 
 app = FastAPI(
     title="Amazon Safe Agent",
@@ -28,20 +29,12 @@ app.include_router(documents_router)
 app.include_router(expenses_router)
 app.include_router(approvals_router)
 app.include_router(evaluation_router)
+app.include_router(audit_router)
 
 FRONTEND_DIR = Path(__file__).resolve().parents[2] / "governed-ai-agent"
 
-app.mount(
-    "/css",
-    StaticFiles(directory=FRONTEND_DIR / "css"),
-    name="css"
-)
-
-app.mount(
-    "/js",
-    StaticFiles(directory=FRONTEND_DIR / "js"),
-    name="js"
-)
+app.mount("/css", StaticFiles(directory=FRONTEND_DIR / "css"), name="css")
+app.mount("/js", StaticFiles(directory=FRONTEND_DIR / "js"), name="js")
 
 @app.get("/")
 def home():

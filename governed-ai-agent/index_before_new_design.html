@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMAZON AI AGENT | Governed Agent</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/auth.css">
+</head>
+<body>
+    <section id="authView" class="auth-view">
+        <div class="auth-card">
+            <div class="auth-brand"><span class="brand-icon">⬡</span><span>AMAZON AI AGENT</span></div>
+            <h1 id="authTitle">Welcome back</h1>
+            <p id="authSubtitle">Sign in to continue to your workspace.</p>
+            <form id="authForm">
+                <div class="form-group" id="nameGroup" hidden>
+                    <label for="authName">Full name</label>
+                    <input id="authName" type="text" autocomplete="name">
+                </div>
+                <div class="form-group">
+                    <label for="authEmail">Email</label>
+                    <input id="authEmail" type="email" autocomplete="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="authPassword">Password</label>
+                    <input id="authPassword" type="password" autocomplete="current-password" minlength="6" required>
+                </div>
+                <p id="authError" class="auth-error" role="alert"></p>
+                <button id="authSubmit" class="primary-button" type="submit">Sign in</button>
+            </form>
+            <p class="auth-switch">
+                <span id="authSwitchText">Don't have an account?</span>
+                <button id="authSwitchButton" type="button">Register</button>
+            </p>
+        </div>
+    </section>
+
+    <div class="app" id="appShell" hidden>
+        <aside class="sidebar">
+            <div class="brand"><span class="brand-icon">⬡</span><span>AMAZON AI AGENT</span></div>
+            <p class="nav-label">WORKSPACE</p>
+            <nav class="navigation">
+                <a href="#" class="nav-link active" data-view="dashboard"><span>▦</span> Dashboard</a>
+                <a href="#" class="nav-link" data-view="tasks"><span>☷</span> Tasks</a>
+                <a href="#" class="nav-link" data-view="approvals"><span>✓</span> Approvals</a>
+                <a href="#" class="nav-link" data-view="policies"><span>◇</span> Policies</a>
+                <a href="#" class="nav-link" data-view="evaluations"><span>▥</span> Evaluations</a>
+                <a href="#" class="nav-link" data-view="repair"><span>✎</span> Repair Studio</a>
+                <a href="#" class="nav-link" data-view="playground"><span>⚡</span> Evaluation Playground</a>
+            </nav>
+            <div class="sidebar-footer">
+                <span class="status-dot"></span> All systems operational
+                <button id="logoutButton" class="logout-button" type="button">↪ Log out</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <div><p class="eyebrow">WORKSPACE / OVERVIEW</p><h1 id="pageTitle">Dashboard</h1></div>
+                <div class="user-profile"><div class="avatar" id="userAvatar">U</div><span id="userDisplayName">Workspace User</span></div>
+            </header>
+
+            <section id="dashboardView" class="page-view">
+                <div class="welcome-banner">
+                    <div>
+                        <p class="eyebrow">GOVERNED AI WORKSPACE</p>
+                        <h2>Automate with confidence.</h2>
+                        <p>Submit expense claims with policy enforcement and human oversight.</p>
+                    </div>
+                    <div class="banner-icon">⬡</div>
+                </div>
+
+                <div class="stats-grid">
+                    <article class="stat-card"><p>Total Tasks</p><h3 id="totalTasks">0</h3><span>Expense claims submitted</span></article>
+                    <article class="stat-card"><p>Completed</p><h3 id="runningTasks">0</h3><span>Claims completed</span></article>
+                    <article class="stat-card"><p>Pending Approvals</p><h3 id="pendingApprovals">0</h3><span>Awaiting human review</span></article>
+                    <article class="stat-card"><p>Policy Blocks</p><h3 id="policyBlocks">0</h3><span>Claims blocked by policy</span></article>
+                </div>
+
+                <section class="panel task-form-panel">
+                    <div class="section-heading">
+                        <div><h2>Submit an expense claim</h2><p>Upload a PDF receipt and provide the expense details for policy review.</p></div>
+                    </div>
+
+                    <form id="taskForm">
+                        <div class="form-group">
+                            <label for="taskInput">Expense description</label>
+                            <textarea id="taskInput" placeholder="Explain the business purpose of this expense..." required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="employeeName">Employee name</label>
+                            <input id="employeeName" type="text" minlength="2" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="expenseAmount">Amount (INR)</label>
+                            <input id="expenseAmount" type="number" min="0.01" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="expenseMerchant">Merchant</label>
+                            <input id="expenseMerchant" type="text" minlength="2" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="expenseDate">Expense date</label>
+                            <input id="expenseDate" type="date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="expenseCategory">Category</label>
+                            <select id="expenseCategory" required>
+                                <option value="">Select category</option>
+                                <option value="Travel">Travel</option>
+                                <option value="Food">Food</option>
+                                <option value="Accommodation">Accommodation</option>
+                            </select>
+                        </div>
+                        <div class="task-file-upload">
+                            <label for="taskFileInput">Attach receipt (PDF only)</label>
+                            <div class="task-file-controls">
+                                <input type="file" id="taskFileInput" accept=".pdf,application/pdf" required>
+                                <span class="file-upload-hint">One PDF receipt, maximum 10 MB.</span>
+                            </div>
+                            <div id="taskAttachedFiles" class="task-attached-files"><p class="empty-state">No receipt attached.</p></div>
+                        </div>
+                        <div id="receiptExtraction" class="panel" hidden aria-live="polite"></div>
+                        <div id="expenseSubmissionResult" role="status" aria-live="polite"></div>
+                        <div class="form-footer">
+                            <span>Claims are checked against backend policy rules.</span>
+                            <button type="submit" class="primary-button" id="expenseSubmitButton">Upload &amp; review receipt</button>
+                        </div>
+                    </form>
+                </section>
+
+                <section class="panel">
+                    <div class="section-heading">
+                        <div><h2>Recent activity</h2><p>Your latest expense claims and their backend statuses.</p></div>
+                        <button type="button" class="secondary-button" data-view="tasks">View all tasks</button>
+                    </div>
+                    <div id="recentTasks" class="recent-tasks"><p class="empty-state">No expense claims submitted yet.</p></div>
+                </section>
+            </section>
+
+            <section id="tasksView" class="page-view" hidden>
+                <div class="page-header"><h1>Task Center</h1><p>Track expense claims and their actual backend decisions.</p></div>
+                <div class="panel"><h2>Expense Claim History</h2><div id="taskHistoryList"><p>No claims submitted yet.</p></div></div>
+                <div class="panel">
+                    <h2>Receipt Documents</h2>
+                    <p>Receipt uploads are processed during expense submission. PDF text extraction is supported in this prototype.</p>
+                    <div id="scannedFilesList"><p class="empty-state">No separate document scans.</p></div>
+                </div>
+            </section>
+
+            <section id="approvalsView" class="page-view" hidden>
+                <div class="panel"><h2>Human Approvals</h2><p>Review sensitive actions before the agent proceeds.</p><p class="empty-state">Loading approval requests...</p></div>
+            </section>
+
+            <section id="policiesView" class="page-view" hidden>
+                <div class="panel"><h2>Policy Center</h2><p>Expense policy rules are enforced by the backend.</p><p>Travel, Food and Accommodation claims are checked against configured limits and approval thresholds.</p></div>
+            </section>
+
+            <section id="evaluationsView" class="page-view" hidden>
+                <div class="panel"><h2>Evaluations</h2><p>Monitor task quality and policy compliance.</p></div>
+            </section>
+
+            <section id="repairView" class="page-view repair-view" hidden>
+                <div class="page-header repair-header">
+                    <div><span class="eyebrow">DOCUMENT INTELLIGENCE</span><h1>Smart Document Repair Studio</h1><p>Review findings, explore suggested fixes, and decide what happens next.</p></div>
+                    <div class="header-icon">✦</div>
+                </div>
+                <div class="repair-layout">
+                    <aside class="panel repair-sidebar">
+                        <div class="section-heading"><div><span class="eyebrow">WORKSPACE</span><h2>Select document</h2></div><span class="mini-badge">AI SCAN</span></div>
+                        <label for="repairDocumentSelect">Scanned document</label>
+                        <select id="repairDocumentSelect"><option value="">Select a document</option></select>
+                        <div class="repair-tip"><span class="tip-icon">✧</span><div><strong>Review before applying</strong><p>Suggested changes are not applied until you accept them.</p></div></div>
+                    </aside>
+                    <div class="repair-main">
+                        <div class="repair-intro"><div><span class="eyebrow">SCAN RESULTS</span><h2>Findings &amp; suggestions</h2><p>Inspect each issue and choose how to resolve it.</p></div><span class="status-pill"><span class="status-dot"></span>Human review</span></div>
+                        <div id="repairFindings" class="repair-findings"><div class="empty-state repair-empty"><span class="empty-icon">⌕</span><h3>No document selected</h3><p>Select a scanned document to view its findings.</p></div></div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="playgroundView" class="page-view playground-view" hidden>
+                <div class="page-header playground-header">
+                    <div><span class="eyebrow">AGENT TESTING LAB</span><h1>Evaluation Playground</h1><p>Compare how policy settings affect agent performance, risk, and approval requirements.</p></div>
+                    <div class="header-icon">⚡</div>
+                </div>
+                <div class="playground-layout">
+                    <div class="panel evaluation-config">
+                        <div class="section-heading"><div><span class="eyebrow">CONFIGURATION</span><h2>Build a test</h2></div><span class="config-icon">⚙️</span></div>
+                        <label for="evaluationScenario">Test scenario</label>
+                        <select id="evaluationScenario">
+                            <option value="document">Document review</option>
+                            <option value="sensitive">Sensitive action</option>
+                            <option value="external">External data sharing</option>
+                        </select>
+                        <label for="evaluationPolicy">Policy strictness</label>
+                        <select id="evaluationPolicy">
+                            <option value="balanced">Balanced</option>
+                            <option value="strict">Strict</option>
+                            <option value="permissive">Permissive</option>
+                        </select>
+                        <div class="policy-hint"><strong>Policy controls agent behavior</strong><p>Compare how different policy settings change task completion and risk.</p></div>
+                        <button type="button" class="primary-button run-evaluation-btn" id="runEvaluation">▶️ Run evaluation</button>
+                    </div>
+                    <div class="panel evaluation-results-panel">
+                        <div class="section-heading"><div><span class="eyebrow">SIMULATION OUTPUT</span><h2>Evaluation results</h2></div><span class="results-badge">DEMO</span></div>
+                        <div id="evaluationResults" class="evaluation-results"><div class="empty-state evaluation-empty"><span class="empty-icon">⌁</span><h3>Ready to evaluate</h3><p>Choose a scenario and policy, then run the test to view results.</p></div></div>
+                    </div>
+                </div>
+                <div class="evaluation-note"><span>ⓘ</span><p>Results are simulated for this prototype, not measurements from a live AI agent.</p></div>
+            </section>
+        </main>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/tasks.js"></script>
+    <script src="js/file-scanner.js"></script>
+    <script src="js/approvals.js"></script>
+    <script src="js/evaluation.js"></script>
+</body>
+</html>
