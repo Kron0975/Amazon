@@ -1,241 +1,243 @@
-const taskForm = document.getElementById("taskForm");
-const taskInput = document.getElementById("taskInput");
-const recentTasks = document.getElementById("recentTasks");
+﻿(() => {
+    "use strict";
 
-let tasks = JSON.parse(localStorage.getItem("agentTasks") || "[]");
-let taskCounter = tasks.reduce((max, task) => Math.max(max, Number(task.id) || 0), 0);
+    const API_BASE = "http://127.0.0.1:8000/api/v1";
+    const STORAGE_KEY = "amazonExpenseClaims";
 
-const taskStages = [
-    { label: "Task received", progress: 10, delay: 700 },
-    { label: "Analyzing request", progress: 30, delay: 1400 },
-    { label: "Working on task", progress: 60, delay: 2200 },
-    { label: "Checking results", progress: 85, delay: 1500 },
-    { label: "Task completed", progress: 100, delay: 900 }
-];
+    let selectedReceipt = null;
+    let busy = false;
 
-function saveTasks() {
-    localStorage.setItem("agentTasks", JSON.stringify(tasks));
-    window.dispatchEvent(new Event("agentTasksUpdated"));
-}
+    document.addEventListener("DOMContentLoaded", init);
 
-taskForm?.addEventListener("submit", function (event) {
-    event.preventDefault();
+    function init() {
+        const form = document.getElementById("taskForm");
+        const fileInput = document.getElementById("taskFileInput");
 
-    const taskText = taskInput.value.trim();
-    if (!taskText) return;
+        if (!form || !fileInput) return;
 
-    const task = {
-        id: ++taskCounter,
-        text: taskText,
-        status: "In progress",
-        progress: 0,
-        currentStep: "Starting task",
-        activity: []
-    };
-
-    tasks.unshift(task);
-    taskInput.value = "";
-
-    saveTasks();
-    renderTasks();
-    runTaskProgress(task);
-});
-
-function runTaskProgress(task) {
-    let stageIndex = 0;
-
-    function advanceStage() {
-        if (stageIndex >= taskStages.length) return;
-
-        const stage = taskStages[stageIndex];
-
-        task.progress = stage.progress;
-        task.currentStep = stage.label;
-
-        task.activity.unshift({
-            label: stage.label,
-            time: new Date().toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit"
-            })
+        fileInput.addEventListener("change", () => {
+            selectedReceipt = fileInput.files?.[0] || null;
+            renderSelectedReceipt();
+            clearResult();
         });
 
-        if (stage.progress === 100) {
-            task.status = "Completed";
+        form.addEventListener("submit", handleExpenseSubmit);
+        renderSelectedReceipt();
+    }
+
+    async function handleExpenseSubmit(event) {
+        event.preventDefault();
+        if (busy) return;
+
+        const form = event.currentTarget;
+        if (!form.reportValidity()) return;
+
+        if (!selectedReceipt) {
+            showResult("Please attach a PDF receipt.", true);
+            return;
         }
 
-        saveTasks();
-        renderTasks();
+        if (
+            selectedReceipt.type !== "application/pdf" &&
+            !selectedReceipt.name.toLowerCase().endsWith(".pdf")
+        ) {
+            showResult("Only PDF receipts are supported.", true);
+            return;
+        }
 
-        stageIndex++;
+        if (selectedReceipt.size <= 0 || selectedReceipt.size > 10 * 1024 * 1024) {
+            showResult("Receipt must be larger than 0 bytes and no more than 10 MB.", true);
+            return;
+        }
 
-        if (stageIndex < taskStages.length) {
-            setTimeout(advanceStage, stage.delay);
+        const payload = {
+            employee_name: valueOf("employeeName"),
+            amount: Number(valueOf("expenseAmount")),
+            merchant: valueOf("expenseMerchant"),
+            expense_date: valueOf("expenseDate"),
+            category: valueOf("expenseCategory"),
+            description: valueOf("taskInput")
+        };
+
+        if (!Number.isFinite(payload.amount) || payload.amount <= 0) {
+            showResult("Enter a valid amount greater than zero.", true);
+            return;
+        }
+
+        setBusy(true);
+
+        try {
+            showResult("Uploading receipt...", false);
+
+            const uploadForm = new FormData();
+            uploadForm.append("file", selectedReceipt);
+
+            const uploadResponse = await fetch(
+                `${API_BASE}/documents/upload`,
+                { method: "POST", body: uploadForm }
+            );
+
+            const upload = await readResponse(uploadResponse);
+
+            if (!upload.document_id) {
+                throw new Error("Backend did not return a document ID.");
+            }
+
+            payload.document_id = upload.document_id;
+
+            try {
+                const extractionResponse = await fetch(
+                    `${API_BASE}/documents/${encodeURIComponent(upload.document_id)}/extract`
+                );
+
+                const extraction = await readResponse(extractionResponse);
+                showExtraction(extraction.extracted_text || "No readable text found.");
+            } catch (error) {
+                showExtraction(
+                    `Text extraction unavailable: ${error.message}. Please verify the details against your original PDF.`
+                );
+            }
+
+            showResult("Receipt uploaded. Submitting expense for policy review...", false);
+
+            const expenseResponse = await fetch(
+                `${API_BASE}/expenses/submit`,
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                }
+            );
+
+            const result = await readResponse(expenseResponse);
+
+            const record = {
+                id: result.expense_id,
+                expense_id: result.expense_id,
+                ...payload,
+                status: result.status,
+                message: result.message,
+                approval_id: result.approval_id || null,
+                created_at: new Date().toISOString()
+            };
+
+            const claims = getClaims();
+            claims.unshift(record);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(claims.slice(0, 100)));
+
+            window.dispatchEvent(new CustomEvent("expenseClaimsUpdated"));
+
+            let message = `Backend decision: ${result.status}. ${result.message}`;
+
+            if (result.approval_id) {
+                message += ` Approval #${result.approval_id} is available in the Approvals page.`;
+            }
+
+            showResult(message, false);
+            form.reset();
+            selectedReceipt = null;
+            renderSelectedReceipt();
+
+        } catch (error) {
+            showResult(`Submission failed: ${error.message}`, true);
+        } finally {
+            setBusy(false);
         }
     }
 
-    advanceStage();
-}
+    async function readResponse(response) {
+        let data = {};
 
-function renderTasks() {
-    if (!recentTasks) return;
+        try {
+            data = await response.json();
+        } catch {}
 
-    if (tasks.length === 0) {
-        recentTasks.innerHTML = "<p>No tasks yet. Submit a task to get started.</p>";
-        return;
-    }
-
-    recentTasks.innerHTML = tasks.slice(0, 5).map(task => `
-        <div class="recent-task">
-            <div>
-                <strong>${escapeDashboardHTML(task.text)}</strong>
-                <p>${escapeDashboardHTML(task.currentStep || task.status)}</p>
-            </div>
-            <span>${Number(task.progress) || 0}%</span>
-        </div>
-    `).join("");
-}
-
-function escapeDashboardHTML(value = "") {
-    return String(value).replace(/[&<>"']/g, character => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#039;"
-    }[character]));
-}
-
-renderTasks();
-
-const addFileButton = document.getElementById("addFileButton");
-const fileInput = document.getElementById("fileInput");
-const uploadedFilesList = document.getElementById("uploadedFilesList");
-
-let uploadedFiles = [];
-
-addFileButton.addEventListener("click", () => {
-    fileInput.click();
-});
-
-fileInput.addEventListener("change", () => {
-    const selectedFiles = Array.from(fileInput.files);
-
-    selectedFiles.forEach(file => {
-        uploadedFiles.push(file);
-    });
-
-    renderUploadedFiles();
-    fileInput.value = "";
-});
-
-function formatFileSize(bytes) {
-    if (bytes < 1024) return `${bytes} B`;
-    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
-
-function renderUploadedFiles() {
-    uploadedFilesList.innerHTML = "";
-
-    if (uploadedFiles.length === 0) {
-        uploadedFilesList.innerHTML =
-            '<p class="empty-state">No files added yet.</p>';
-        return;
-    }
-
-    uploadedFiles.forEach((file, index) => {
-        const item = document.createElement("div");
-        item.className = "uploaded-file-item";
-
-        const info = document.createElement("div");
-        info.className = "uploaded-file-info";
-
-        const name = document.createElement("span");
-        name.className = "uploaded-file-name";
-        name.textContent = file.name;
-
-        const size = document.createElement("span");
-        size.className = "uploaded-file-size";
-        size.textContent = formatFileSize(file.size);
-
-        const removeButton = document.createElement("button");
-        removeButton.type = "button";
-        removeButton.className = "remove-file-button";
-        removeButton.textContent = "Remove";
-
-        removeButton.addEventListener("click", () => {
-            uploadedFiles.splice(index, 1);
-            renderUploadedFiles();
-        });
-
-        info.append(name, size);
-        item.append(info, removeButton);
-        uploadedFilesList.appendChild(item);
-    });
-}
-
-const taskFileInput = document.getElementById("taskFileInput");
-const taskAttachedFiles = document.getElementById("taskAttachedFiles");
-
-let taskFiles = [];
-
-taskFileInput.addEventListener("change", () => {
-    const selectedFiles = Array.from(taskFileInput.files);
-
-    selectedFiles.forEach(file => {
-        const alreadyAdded = taskFiles.some(
-            existingFile =>
-                existingFile.name === file.name &&
-                existingFile.size === file.size &&
-                existingFile.lastModified === file.lastModified
-        );
-
-        if (!alreadyAdded) {
-            taskFiles.push(file);
+        if (!response.ok) {
+            throw new Error(
+                typeof data.detail === "string"
+                    ? data.detail
+                    : `Server returned HTTP ${response.status}`
+            );
         }
-    });
 
-    renderTaskFiles();
-    taskFileInput.value = "";
-});
-
-function renderTaskFiles() {
-    taskAttachedFiles.innerHTML = "";
-
-    if (taskFiles.length === 0) {
-        taskAttachedFiles.innerHTML =
-            '<p class="empty-state">No files attached.</p>';
-        return;
+        return data;
     }
 
-    taskFiles.forEach((file, index) => {
-        const item = document.createElement("div");
+    function getClaims() {
+        try {
+            const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+            return Array.isArray(data) ? data : [];
+        } catch {
+            return [];
+        }
+    }
+
+    function renderSelectedReceipt() {
+        const container = document.getElementById("taskAttachedFiles");
+        if (!container) return;
+
+        if (!selectedReceipt) {
+            container.innerHTML = '<p class="empty-state">No receipt attached.</p>';
+            return;
+        }
+
+        const item = document.createElement("p");
         item.className = "attached-file-item";
+        item.textContent =
+            `${selectedReceipt.name} (${(selectedReceipt.size / 1024).toFixed(1)} KB)`;
 
-        const name = document.createElement("span");
-        name.className = "attached-file-name";
-        name.textContent = `${file.name} (${formatTaskFileSize(file.size)})`;
-
-        const removeButton = document.createElement("button");
-        removeButton.type = "button";
-        removeButton.className = "remove-attached-file";
-        removeButton.textContent = "Remove";
-
-        removeButton.addEventListener("click", () => {
-            taskFiles.splice(index, 1);
-            renderTaskFiles();
-        });
-
-        item.append(name, removeButton);
-        taskAttachedFiles.appendChild(item);
-    });
-}
-
-function formatTaskFileSize(bytes) {
-    if (bytes < 1024) return `${bytes} B`;
-    if (bytes < 1024 * 1024) {
-        return `${(bytes / 1024).toFixed(1)} KB`;
+        container.replaceChildren(item);
     }
-    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
+
+    function showExtraction(text) {
+        const panel = document.getElementById("receiptExtraction");
+        if (!panel) return;
+
+        panel.hidden = false;
+
+        const heading = document.createElement("h3");
+        heading.textContent = "Receipt text preview";
+
+        const pre = document.createElement("pre");
+        pre.style.whiteSpace = "pre-wrap";
+        pre.textContent = text;
+
+        panel.replaceChildren(heading, pre);
+    }
+
+    function showResult(message, isError) {
+        const target = document.getElementById("expenseSubmissionResult");
+        if (!target) return;
+
+        target.textContent = message;
+        target.style.color = isError ? "#b42318" : "inherit";
+        target.setAttribute("role", isError ? "alert" : "status");
+    }
+
+    function clearResult() {
+        const target = document.getElementById("expenseSubmissionResult");
+        if (target) target.textContent = "";
+
+        const panel = document.getElementById("receiptExtraction");
+        if (panel) {
+            panel.hidden = true;
+            panel.replaceChildren();
+        }
+    }
+
+    function setBusy(value) {
+        busy = value;
+
+        const button = document.getElementById("expenseSubmitButton");
+        if (!button) return;
+
+        button.disabled = value;
+        button.textContent = value
+            ? "Uploading & submitting..."
+            : "Submit expense claim";
+    }
+
+    function valueOf(id) {
+        return document.getElementById(id)?.value?.trim() || "";
+    }
+})();
