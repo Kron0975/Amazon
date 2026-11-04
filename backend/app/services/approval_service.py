@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+
 from sqlalchemy.orm import Session
 
 from app.models.approval import Approval
@@ -6,12 +7,19 @@ from app.models.approval import Approval
 
 def create_approval_request(
     db: Session,
-    expense_id: str,
     action_name: str,
-    reason: str
+    reason: str,
+    document_id: str = None,
+    expense_id: str = None,
+    task_id: int = None
 ):
+    if not document_id and not expense_id:
+        raise ValueError("Either document_id or expense_id is required.")
+
     approval = Approval(
+        document_id=document_id,
         expense_id=expense_id,
+        task_id=task_id,
         action_name=action_name,
         reason=reason,
         status="pending"

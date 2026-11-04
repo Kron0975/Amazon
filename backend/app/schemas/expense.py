@@ -1,8 +1,9 @@
-from pydantic import BaseModel, Field
+﻿from pydantic import BaseModel, Field
 from typing import Optional
 
 
 class ExpenseCreate(BaseModel):
+    document_id: str = Field(min_length=1)
     employee_name: str = Field(min_length=2)
     amount: float = Field(gt=0)
     merchant: str = Field(min_length=2)
