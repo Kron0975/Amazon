@@ -2,8 +2,6 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.routes.documents import router as documents_router
 from app.routes.expenses import router as expenses_router
-from app.routes.approvals import router as approvals_router
-from app.routes.evaluation import router as evaluation_router
 
 app = FastAPI(
     title="Amazon Safe Agent",
@@ -20,8 +18,6 @@ app.add_middleware(
 
 app.include_router(documents_router)
 app.include_router(expenses_router)
-app.include_router(approvals_router)
-app.include_router(evaluation_router)
 
 
 @app.get("/")
@@ -34,4 +30,10 @@ def home():
 
 @app.get("/health")
 def health_check():
+<<<<<<< HEAD
     return {"status": "healthy"}
+=======
+    return {
+        "status": "healthy"
+    }
+>>>>>>> parent of f6afb7d (Merge branch 'main' of https://github.com/Kron0975/Amazon)
