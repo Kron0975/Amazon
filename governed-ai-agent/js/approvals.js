@@ -1,4 +1,4 @@
-const API_BASE = "http://127.0.0.1:8000/api/v1";
+﻿const API_BASE = "/api/v1";
 
 document.addEventListener("DOMContentLoaded", () => {
     const view = document.getElementById("approvalsView");
@@ -55,7 +55,7 @@ async function loadApprovals() {
 
             const details = document.createElement("p");
             details.textContent =
-                `${approval.action_name} � ${approval.reason}`;
+                `${approval.action_name} — ${approval.reason}`;
 
             const status = document.createElement("p");
             status.textContent = `Status: ${approval.status}`;
@@ -119,3 +119,4 @@ async function reviewApproval(id, decision) {
         alert(error.message);
     }
 }
+

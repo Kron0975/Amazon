@@ -1,4 +1,4 @@
-const EVALUATION_API = "http://127.0.0.1:8000/api/v1/evaluation/metrics";
+﻿const EVALUATION_API = "/api/v1/evaluation/metrics";
 
 document.addEventListener("DOMContentLoaded", () => {
     const view = document.getElementById("evaluationsView");
@@ -103,3 +103,4 @@ function escapeHTML(value) {
         "'": "&#39;"
     })[character]);
 }
+

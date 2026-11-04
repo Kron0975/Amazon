@@ -1,7 +1,7 @@
 ﻿(() => {
     "use strict";
 
-    const API_BASE = "http://127.0.0.1:8000/api/v1";
+    const API_BASE = "/api/v1";
     const STORAGE_KEY = "amazonExpenseClaims";
 
     let selectedReceipt = null;
@@ -241,3 +241,4 @@
         return document.getElementById(id)?.value?.trim() || "";
     }
 })();
+
